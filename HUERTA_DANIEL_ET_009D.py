@@ -8,6 +8,7 @@ planes = {
     'F004': ['Plan Senior', 'trimestral', 3, True, False, 'mañana'],
     'F005': ['Plan Anual Pro', 'anual', 12, True, True, 'libre'],
     'F006': ['Plan Nocturno', 'mensual', 1, False, True, 'noche']
+    
 }
 
 #Diccionario 2
@@ -18,6 +19,7 @@ inscripciones = {
     'F004': [35990, 6],
     'F005': [159990, 2],
     'F006': [18990, 15]
+
 }
 
 #CREACION DEL MENU
@@ -48,4 +50,58 @@ def leer_opcion():
                 print('Error, la opcion ingresada no es valida. Por favor ingrese un número entre 1 y 6')
                 print('Detalle del error:', e)
 
+def detalle_plan(codigo_plan):
+    print('=' * 60)
+    print(f'el codigo {codigo_plan} se encuentra en el diccionario de planes. \n')
+    print('=' * 60)
+    print(f'Detalles del plan: {planes[codigo_plan]}')
+    print(f'Precio plan: ${inscripciones[codigo_plan][0]}')
+    print(f'stock disponible de inscripciones: {inscripciones[codigo_plan][1]}')
+    print('=' * 60, '\n')
 
+def stock_planes():
+    print('=' * 60)
+    print('***** STOCK DE PLANES *****')
+    print('=' * 60, '\n')
+    plan_buscado = input('Ingrese el plan a buscar(ej: Plan basico, plan full, plan estudiante, etc) o escriba "Salir" para cancelar')
+    if plan_buscado.lower() == 'Salir':
+        print("operacion cancelada. \n")
+        return
+    if plan_buscado.strip() == "":
+        print("Error, el nombre no puede quedar vacío. \n")
+        return
+    encontrados = False
+    for codigo, detalles in planes.items():
+        if plan_buscado.lower() in detalles[4].lower():
+            detalle_plan(codigo)
+            encontrados = True
+    if not encontrados:
+        print(f'No se encontraron planes con el nombre: {plan_buscado}\n')
+
+def filtro_planes_rango_precio():
+    while True:
+        print("(Escriba 'Salir' en cualquier momento para cancelar)")
+        precio_min = input('Ingrese el precio mínimo: ')
+        if precio_min.lower() == 'Salir': return None,None
+        precio_max = input('Ingrese el precio máximo: ')
+        if precio_max.lower() == 'Salir': return None,None
+
+        if precio_min.strip() == "" or precio_max.strip() == "":
+            print('Error, los precios no pueden quedar vacíos o contener solo espacios. \n')
+            continue
+        try:
+            precio_min = float(precio_min)
+            precio_max = float(precio_max)
+
+            if precio_min < 0 or precio_max < 0:
+                print('Error, los precios no pueden ser negativos. Por favor ingrese valores válidos. \n')
+                continue
+            if precio_min > precio_max:
+                print('Error, el precio minimo no puede ser mayor que el precio máximo, ingrese valores validos')
+                continue
+            return precio_min, precio_max
+        except ValueError as e:
+            print('Error, los valores ingresados no son validos. Por favor, ingrese números validos. \n')
+            print('Detalle del error:', e)
+
+            
