@@ -104,4 +104,191 @@ def filtro_planes_rango_precio():
             print('Error, los valores ingresados no son validos. Por favor, ingrese números validos. \n')
             print('Detalle del error:', e)
 
-            
+def busqueda_planes_rango_precio():
+    print('=' * 60)
+    print('***** BUSQUEDA DE PLANES POR RANGO DE PRECIO *****')
+    print('=' *60, '\n')
+    precio_min, precio_max = filtro_planes_rango_precio()
+    if precio_min is None:
+        print("Operacion cancelada \n")
+        return
+    planes_en_rango = []
+    for codigo,(precio_cupo) in inscripciones, items():
+        if (precio_min <= precio <= precio_max) and (cupo > 0):
+            planes_en_rango.append((codigo,planes[codigo][0], precio_cupo))
+    if planes_en_rango:
+        print (f'planes disponibles en el rango de precio ${precio_min} - {precio_max}: ')
+        for codigo, plan, precio, cupo, in planes_en_rango:
+            print(f'codigo: {codigo}, Plan: {plan}, precio: ${precio}, Cupo: {cupo} ')
+        print('\n')
+    else:
+        print(f'No se encontraron planes disponibles en el rango de precio ${precio_min} - {precio_max}. \n')
+
+def buscar_codigo_plan():
+    while True:
+        codigo_plan = input('Ingrese el codigo del plan a buscar (O "Salir" para cancelar)')
+        if codigo_plan.lower() == "Salir":
+            return False, ""
+        elif codigo_plan.strip == "":
+            print('Error, el codigo no puede quedar vacio o contener solo espacios blancos. \n')
+        elif codigo_plan not in inscripciones:
+            print(f'El codigo {codigo_plan} no se encuentra en el diccionario. \n')
+        else:
+            print(f'El codigo {codigo_plan} se encuentra en el diccionario. \n')
+            print(f'Detalles: {planes[codigo_plan]}')
+            print(f'Precio: ${inscripciones[codigo_plan][0]}, stock: {inscripciones[codigo_plan][1]} \n')
+            return True, codigo_plan
+
+def validar_precio_plan():
+    estado_busqueda, codigo_plan = buscar_codigo_plan()
+    if estado_busqueda == False:
+        return False, codigo_plan
+    else:
+        while True:
+            respuesta = input(f'¿Desea actualizar el precio del plan {codigo_plan} (S/N)?: ').lower
+            if respuesta == 'N':
+                return False, codigo_plan
+            elif respuesta == 'S':
+                precio_nuevo = input(f'Ingrese el nuevo precio para el plan {codigo_plan}: ')
+                if precio_nuevo.strip() == "":
+                    print('Error, el precio no puede quedar vacio. \n')
+                else:
+                    try:
+                        precio_nuevo = int(precio_nuevo)
+                        if precio_nuevo < 0:
+                            print('Error, el precio no puede ser negativo, por favor ingrese un numero valido. \n')
+                        else:
+                            inscripciones[codigo_plan][0] = int(precio_nuevo)
+                            return True, codigo_plan
+                    except ValueError as e:
+                        print('Error, el valor ingresado no es valido. Por favor, ingrese un numero valido. \n')
+                        print('Detalle del error: ', e)
+
+            else:
+                print('opcion invalida. Por favor ingrese "S" para sí, o "N" para no. \n')
+
+def actualizar_precio_plan():
+    estado_actualizacion, codigo_plan = validar_precio_plan()
+    if estado_actualizacion:
+        print(f'El precio del plan {codigo_plan} ha sido actualizado a: {inscripciones[codigo_plan][0]}\n')
+    else:
+        print('Se ha cancelado la operación. \n')
+
+
+#validaciones
+
+def validar_codigo(codigo_nuevo):
+    if codigo_nuevo.strip() == "":
+        print('Error: el codigo del nuevo plan no puede quedar vacio. \n')
+        return False
+    return True
+
+def validar_plan(plan_nuevo):
+    if plan_nuevo.strip() == "":
+        print('Error: el nombre del nuevo plan no puede quedar vacio. \n')
+        return False
+    return True
+
+def validar_duracion(duracion_nueva):
+    if duracion_nueva.strip() == "":
+        print('Error: la nueva duracion del nuevo plan no puede queedar vacia. \n')
+        return False
+    return True
+
+def validar_acceso_piscina(acceso_piscina_nuevo):
+    if acceso_piscina_nuevo.strip() == "":
+        print('Error: el nuevo acceso a la piscina del nuevo plan no puede quedar vacio. \n')
+        return False
+    return True
+
+def validar_clases(clases_nueva):
+    if clases_nueva.strip() == "":
+        print('Error: Las clases nuevas al nuevo plan no puede quedar vacio. \n')
+        return False
+    return True
+
+def validar_horario(nuevo_horario):
+    if nuevo_horario.strip() == "":
+        print('Error: El nuevo horario al nuevo plan no puede quedar vacio. \n')
+        return False
+    return True
+
+def validar_precio(precio_nuevo):
+    if precio_nuevo.strip() == "":
+        print('Error: El precio nuevo del nuevo plan no puede quedar vacio. \n')
+        return False
+    else:
+        try:
+            precio_nuevo = int(precio_nuevo)
+            if precio_nuevo <= 0:
+                print('Error: El precio no puede ser igual o menor a 0 \n')
+                return False
+            return True
+        except ValueError as e:
+            print('Error: El precio debe ser un valor numerico entero \n')
+            return False
+
+def validar_cupos(nuevo_cupo):
+    if nuevo_cupo < 0:
+        print('Error: El cupo no puede ser menor a cero. \n')
+        return False
+    return True
+
+def agregar_plan():
+    print('=' * 60)
+    print('***** AGREGAR NUEVO PLAN *****')
+    print('=' * 60, '\n')
+
+    codigo_nuevo = (input('Ingrese el codigo del nuevo plan: '))
+    plan_nuevo = (input('Ingrese el nombre del nuevo plan: '))
+    duracion_nueva = (input('Ingrese la nueva duracion del plan'))
+    acceso_piscina_nuevo = (input('Ingrese el acceso a la piscina nuevo'))
+    clases_nueva = (input('Ingrese las clases nueva al nuevo plan'))
+    nuevo_horario = (input('Ingrese el nuevo horario al plan'))
+    precio_nuevo = (input('Ingrese el precio del nuevo plan'))
+    nuevo_cupo = (input('Ingrese el nuevo cupo del nuevo plan'))
+
+    bool_codigo = validar_codigo(codigo_nuevo)
+    bool_plan_nuevo = validar_plan(plan_nuevo)
+    bool_duracion_nueva = validar_duracion(duracion_nueva)
+    bool_acceso_piscina_nuevo = validar_acceso_piscina(acceso_piscina_nuevo)
+    bool_clases_nueva = validar_clases(clases_nueva)
+    bool_nuevo_horario = validar_horario(nuevo_horario)
+    bool_precio_nuevo = validar_precio(precio_nuevo)
+    bool_nuevo_cupo = validar_cupos(nuevo_cupo)
+
+    #verificar validaciones
+
+    if (bool_codigo and bool_plan_nuevo and bool_duracion_nueva and bool_acceso_piscina_nuevo and bool_clases_nueva and bool_nuevo_horario and bool_precio_nuevo and bool_nuevo_cupo):
+        if codigo_nuevo in planes 
+
+
+
+
+
+def eliminar_planes():
+    print('=' *60)
+    print('***** ELIMINAR PLANES *****')
+    print('=' *60)
+    bool_codigo, codigo_plan = buscar_codigo_plan()
+
+
+
+def main():
+    while True:
+        Menu_principal()
+        opcion = leer_opcion()
+        if opcion == 1
+        elif opcion == 2
+        elif opcion == 3
+        elif opcion == 4
+        elif opcion == 6
+        print ('Muchas gracias!')
+        exit(0)
+
+    else:
+        return False
+    
+    main()
+
+
